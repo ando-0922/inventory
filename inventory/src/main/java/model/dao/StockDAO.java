@@ -9,18 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.InventoryConnection;
-import model.bean.ProductInventory;
 import model.bean.PurchaseDetail;
 import model.bean.PurchaseSlip;
+import model.bean.Stock;
 
 public class StockDAO {
 	InventoryConnection inventoryConnection = new InventoryConnection();
 
-	public List<ProductInventory> allStocks() {
+	public List<Stock> allStocks() {
 		String sql = "SELECT p.name,s.warehouse_id,w.name AS warehouse,s.qty FROM stocks s \n"
 				+ "JOIN products p ON s.product_id = p.id\n"
 				+ "JOIN warehouses w ON s.warehouse_id = w.id";
-		var list = new ArrayList<ProductInventory>();
+		var list = new ArrayList<Stock>();
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
 			try (ResultSet rs = ps.executeQuery();) {
@@ -29,7 +29,7 @@ public class StockDAO {
 					int warehouseId = rs.getInt("warehouse_id");
 					String warehouse = rs.getString("warehouse");
 					int qty = rs.getInt("qty");
-					list.add(new ProductInventory(name, warehouseId, warehouse, qty));
+					list.add(new Stock(name, warehouseId, warehouse, qty));
 				}
 			}
 		} catch (SQLException e) {
@@ -38,13 +38,13 @@ public class StockDAO {
 		return list;
 	}
 
-	public List<ProductInventory> stocksById(int selectId) {
+	public List<Stock> stocksById(int selectId) {
 		String sql = "SELECT p.name,s.warehouse_id,w.name AS warehouse,s.qty \n"
 				+ "FROM stocks s \n"
 				+ "JOIN products p ON s.product_id = p.id\n"
 				+ "JOIN warehouses w ON s.warehouse_id = w.id\n"
 				+ "WHERE s.warehouse_id = ?";
-		var list = new ArrayList<ProductInventory>();
+		var list = new ArrayList<Stock>();
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
 			ps.setInt(1, selectId);
@@ -54,7 +54,7 @@ public class StockDAO {
 					int warehouseId = rs.getInt("warehouse_id");
 					String warehouse = rs.getString("warehouse");
 					int qty = rs.getInt("qty");
-					list.add(new ProductInventory(name, warehouseId, warehouse, qty));
+					list.add(new Stock(name, warehouseId, warehouse, qty));
 				}
 			}
 		} catch (SQLException e) {

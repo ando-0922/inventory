@@ -1,11 +1,11 @@
 package model.bean;
 
-public class ProductInventory {
+public class Stock {
 	private String name;
 	private int warehouseId;
 	private String warehouse;
 	private int qty;
-	public ProductInventory(String name, int warehouseId, String warehouse, int qty) {
+	public Stock(String name, int warehouseId, String warehouse, int qty) {
 		super();
 		this.name = name;
 		this.warehouseId = warehouseId;

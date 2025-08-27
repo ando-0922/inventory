@@ -47,7 +47,7 @@ public class StorageHistory {
 	}
 	@Override
 	public String toString() {
-		return "商品名：" + name + "\t在庫数：" + qty + "\t未明" + type + "\t未明" + refType+ "\t入出庫日時：" + movedAt;
+		return "商品名：" + name + "\t在庫数：" + qty + "\t区分" + type + "\t参照区別" + refType+ "\t入出庫日時：" + movedAt;
 	}
 	
 }
