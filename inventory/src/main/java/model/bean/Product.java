@@ -41,6 +41,13 @@ public class Product {
 		this.reorderPoint = reorderPoint;
 		this.orderLot = orderLot;
 	}
+	public Product(String name2, String jan2) {
+		this.name = name2;
+		this.jan = jan2;
+	}
+	public Product() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
 	public int getId() {
 		return id;
 	}

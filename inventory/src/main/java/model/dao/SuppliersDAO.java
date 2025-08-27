@@ -12,14 +12,16 @@ import model.bean.Supplier;
 public class SuppliersDAO {
 	InventoryConnection inventoryConnection = new InventoryConnection();
 
-	public String srchSupById(int id) {
-		String sql = "SELECT name FROM suppliers WHERE id = ?";
+	public Supplier srchIdNameById(int serchId) {
+		String sql = "SELECT id,name FROM suppliers WHERE id = ?";
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
-			ps.setInt(1, id);
+			ps.setInt(1, serchId);
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
-					return rs.getString("name");
+					int id = rs.getInt("id");
+					String name = rs.getString("name");
+					return new Supplier(id,name);
 				}
 			}
 		} catch (SQLException e) {
@@ -28,14 +30,16 @@ public class SuppliersDAO {
 		return null;
 	}
 
-	public String srchSupByWrd(String keyword) {
-		String sql = "SELECT name FROM suppliers WHERE id LIKE ?";
+	public Supplier srchIdNameByWrd(String keyword) {
+		String sql = "SELECT id,name FROM suppliers WHERE id LIKE ?";
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
 			ps.setString(1, "%"+keyword+"%");
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
-					return rs.getString("name");
+					int id = rs.getInt("id");
+					String name = rs.getString("name");
+					return new Supplier(id,name);
 				}
 			}
 		} catch (SQLException e) {

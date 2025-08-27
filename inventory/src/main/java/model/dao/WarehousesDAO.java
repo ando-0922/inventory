@@ -6,18 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import model.InventoryConnection;
+import model.bean.Warehouse;
 
 public class WarehousesDAO {
 	InventoryConnection inventoryConnection = new InventoryConnection();
 
-	public String srchById(int id) {
-		String sql = "SELECT name FROM warehouses WHERE id = ?";
+	public Warehouse srchById(int srchId) {
+		String sql = "SELECT id,name FROM warehouses WHERE id = ?";
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
-			ps.setInt(1, id);
+			ps.setInt(1, srchId);
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
-					return rs.getString("name");
+					int id = rs.getInt("id");
+					String name =  rs.getString("name");
+					return new Warehouse(id,name);
 				}
 			}
 		} catch (SQLException e) {

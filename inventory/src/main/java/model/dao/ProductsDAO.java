@@ -12,18 +12,18 @@ import model.bean.Product;
 public class ProductsDAO {
 	InventoryConnection inventoryConnection = new InventoryConnection();
 
-	public String srchJan(String keyword) {
-		String sql = "SELECT jan FROM products WHERE jan = ?";
+	public Product srchJan(String keyword) {
+		String sql = "SELECT name,jan FROM products WHERE jan = ?";
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
 			ps.setString(1, keyword);
-			String resultjan = null;
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
-					resultjan = rs.getString("jan");
+					String name = rs.getString("name");
+					String jan = rs.getString("jan");
+					return new Product(name,jan);
 				}
 			}
-			return resultjan;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

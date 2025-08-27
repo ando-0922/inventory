@@ -27,6 +27,13 @@ public class Supplier {
 		this.phone = phone;
 		this.email = mail;
 	}
+	public Supplier(int id2, String name2) {
+		this.id = id2;
+		this.name = name2;
+	}
+	public Supplier() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
 	public int getId() {
 		return id;
 	}

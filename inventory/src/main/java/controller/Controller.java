@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import model.bean.Product;
 import model.bean.PurchaseDetail;
 import model.bean.PurchaseSlip;
 import model.bean.Stock;
 import model.bean.StorageHistory;
+import model.bean.Supplier;
+import model.bean.Warehouse;
 import model.dao.ProductsDAO;
 import model.dao.PurchaseLinesDAO;
 import model.dao.PurchasesDAO;
@@ -22,7 +25,6 @@ import view.OriginalDisplayer;
 public class Controller {
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
-		SuppliersDAO spdao = new SuppliersDAO();
 		Service service = new Service();
 		Displayer disp = new Displayer();
 		OriginalDisplayer oDisp = new OriginalDisplayer();
@@ -31,64 +33,46 @@ public class Controller {
 			disp.dispMenuOnCase(select);
 			switch (select) {
 			case "1":
-				String inpPickWarehouse = disp.entStrNotNull("倉庫を選択してください (ID) [全部]:_");
+				String inpPickWarehouse = oDisp.srchWordWarehouse();//検索倉庫を入力
 				List<Stock> stockList = service.stockList(inpPickWarehouse);
 				String inpPartOfName = disp.entStr("キーワード [空=全件] : ");
 				oDisp.stockListbrunchOnNull(stockList, inpPartOfName);//在庫の一覧表示
 				break;
 			case "2":
-				String inpWarehouseHis = disp.entStrNotNull("倉庫を選択してください (ID) [全部]:_");
-
-				String warehouse2 = scan.nextLine();
-				StockMovementsDAO smdao = new StockMovementsDAO();
-				List<StorageHistory> historyList = null;
-				if (warehouse2.equals("全部")) {
-					historyList = smdao.allHistory();
-				} else if (warehouse2.matches("^\\d+$")) {
-					historyList = smdao.historyById(Integer.parseInt(warehouse2));
-				}
-				System.out.print("種別 [ALL|PURCHASE|SALE|ADJUST]: _");
-				String kind = scan.nextLine();
-				System.out.print("期間 From (YYYY-MM-DD) (必須): _");
-				String term = scan.nextLine();
-				LocalDate from = LocalDate.parse(term);
-				System.out.print("期間 To (YYYY-MM-DD) (必須): _");
-				String termto = scan.nextLine();
-				LocalDate to = LocalDate.parse(termto);
-				if (from.isAfter(to)) {
-					System.out.println("期間の指定が不正です。");
-				}
-				System.out.println("入出庫の一覧");
-				if (kind.equals("ALL") || kind.equals("PURCHASE") || kind.equals("SALE") || kind.equals("ADJUST")) {//チェックは入力時に
-					historyList.stream().filter(type -> type.getType().equals(kind))
-							.filter(date -> date.getMovedAt().toLocalDateTime().toLocalDate().isBefore(from))
-							.filter(date -> date.getMovedAt().toLocalDateTime().toLocalDate().isAfter(to))
-							.forEach(System.out::println);
-				}
+				String inpWarehouseHis = oDisp.srchWordWarehouse();//検索倉庫を入力
+				List<StorageHistory> historyList = service.historyList(inpWarehouseHis);//指定した倉庫の履歴の検索結果
+				String hisType = oDisp.entHisType();//区別を入力
+				LocalDate period[] = oDisp.entPeriod();//指定する期間を入力
+				oDisp.dispHistory(historyList, hisType, period);//履歴を表示
 				break;
 			case "3":
 				System.out.print("仕入先 (ID/キーワード) (必須): _");
 				String shire = scan.nextLine();
 				PurchaseSlip ps = new PurchaseSlip();
+				SuppliersDAO spdao = new SuppliersDAO();
+				Supplier sp = new Supplier();
+				WarehousesDAO waredao = new WarehousesDAO();
+				Warehouse wh = new Warehouse();
+				ProductsDAO pddao = new ProductsDAO();
+				Product pd = new Product();
 				if (shire.matches("^\\d+$")) {
-					ps.setSupplier(spdao.srchSupById(Integer.parseInt(shire)));
+					sp = spdao.srchIdNameById(Integer.parseInt(shire));
 				} else {
-					ps.setSupplier(spdao.srchSupByWrd(shire));
+					sp = spdao.srchIdNameByWrd(shire);
 				}
+				
 				System.out.print("倉庫 (ID) (必須): _");
 				int soko = scan.nextInt();
 				scan.nextLine();
-				WarehousesDAO waredao = new WarehousesDAO();
-				ps.setWarehouse(waredao.srchById(soko));
+				wh = waredao.srchById(soko);
+				
 				System.out.print("JAN (必須): _");
 				String jan = scan.nextLine();
-				ProductsDAO pddao = new ProductsDAO();
-				String resultJan = pddao.srchJan(jan);
-				if (resultJan == null) {
+				pd = pddao.srchJan(jan);
+				if (pd.getJan() == null) {
 					System.out.println("正しいJANを入力してください。");
 				}
-				String name = pddao.srchNameByJan(resultJan);
-				ps.setName(name);
+				
 				System.out.print("数量 (整数>0) (必須): _");
 				int quantity = scan.nextInt();
 				scan.nextLine();

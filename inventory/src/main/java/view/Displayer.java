@@ -39,7 +39,7 @@ public class Displayer {
 		case "9" -> "== 9. 商品マスタ 登録/更新 == ";
 		case "10" -> "== 10. 仕入先マスタ 登録/更新 == ";
 		case "11" -> "== 11. レポートCSV出力 == ";
-		default -> throw new IllegalArgumentException("Unexpected value: " + select);
+		default -> "";
 		});
 	}
 

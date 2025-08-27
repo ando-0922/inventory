@@ -32,6 +32,10 @@ public class PurchaseSlip {
 	public PurchaseSlip() {
 	
 	}
+	public PurchaseSlip(int id2, String name2) {
+		this.id = id2;
+		this.name = name2;
+	}
 	public int getId() {
 		return id;
 	}
