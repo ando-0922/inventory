@@ -10,9 +10,15 @@ public class Supplier {
 	private String email;
 	private Timestamp createdAt;
 	private Timestamp updatedAt;
+	Supplier(int id, String name, int leadTimeDays, String phone, String email) {
+		this.id = id;
+		this.name = name;
+		this.leadTimeDays = leadTimeDays;
+		this.phone = phone;
+		this.email = email;
+	}
 	public Supplier(int id, String name, int leadTimeDays, String phone, String email, Timestamp createdAt,
 			Timestamp updatedAt) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.leadTimeDays = leadTimeDays;

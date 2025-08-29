@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.InventoryConnection;
-import model.bean.PurchaseDetail;
+import model.bean.PurchaseLine;
 import model.bean.StorageHistory;
 
 public class StockMovementsDAO {
@@ -64,7 +64,7 @@ public class StockMovementsDAO {
 		return list;
 	}
 
-	public int changeType(PurchaseDetail pd, int warehouseId) {
+	public int changeType(PurchaseLine pd, int warehouseId) {
 		String sql = "INSERT INTO stock_movements\n"
 				+ "(product_id,warehouse_id,qty,type,ref_type,ref_id,moved_at)\n"
 				+ "VALUES(?,?,?,?,?,?,NOW())";
@@ -86,4 +86,26 @@ public class StockMovementsDAO {
 		}
 		return 0;
 	}
+
+	public int insertMovement(StorageHistory s) {
+		String sql = "INSERT INTO stock_movements(product_id, warehouse_id, qty, type, ref_type, ref_id) VALUES (?, ?, ?, ?, ?, ?)";
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
+			ps.setInt(1, s.getProductId());
+			ps.setInt(2, s.getWarehouseId());
+			ps.setInt(3, s.getQty());
+			ps.setString(4, s.getType());
+			ps.setString(5, s.getRefType());
+			ps.setInt(6, s.getRefId());
+			ps.executeUpdate();
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				rs.next();
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 }

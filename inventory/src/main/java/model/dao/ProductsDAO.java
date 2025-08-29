@@ -23,7 +23,7 @@ public class ProductsDAO {
 				while (rs.next()) {
 					String name = rs.getString("name");
 					String jan = rs.getString("jan");
-					return new Product(name,jan);
+					return new Product(name, jan);
 				}
 			}
 		} catch (SQLException e) {
@@ -127,26 +127,33 @@ public class ProductsDAO {
 		}
 		return 0;
 	}
+
 	public int insertProduct(String jan, String name, double stdCost, double stdPrice, int reorderPoint, int orderLot)
 			throws SQLException {
 		String sql = "INSERT INTO products(jan, name, std_cost, std_price, reorder_point, order_lot) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, jan);
 			ps.setString(2, name);
 			ps.setDouble(3, stdCost);
 			ps.setDouble(4, stdPrice);
 			ps.setInt(5, reorderPoint);
 			ps.setInt(6, orderLot);
-			ResultSet rs = ps.executeQuery();
-			rs.next();
-			return rs.getInt("id");
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				rs.next();
+				return rs.getInt(1);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		return 0;
 	}
 
-	public void updateProduct(int id, String name, double stdCost, double stdPrice, int reorderPoint, int orderLot,
-			boolean discontinued) throws SQLException {
+	public int updateProduct(int id, String name, double stdCost, double stdPrice, int reorderPoint, int orderLot,
+			boolean discontinued) {
 		String sql = "UPDATE products SET name=?, std_cost=?, std_price=?, reorder_point=?, order_lot=?, discontinued=? WHERE id=?";
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, name);
 			ps.setDouble(2, stdCost);
 			ps.setDouble(3, stdPrice);
@@ -155,44 +162,61 @@ public class ProductsDAO {
 			ps.setBoolean(6, discontinued);
 			ps.setInt(7, id);
 			ps.executeUpdate();
-		}
-	}
-
-	public Product getByJan(String jan) throws SQLException {
-		String sql = "SELECT * FROM products WHERE jan=?";
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
-			ps.setString(1, jan);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				Product p = new Product();
-				p.setId(rs.getInt("id"));
-				p.setJan(rs.getString("jan"));
-				p.setName(rs.getString("name"));
-				p.setStdCost(rs.getDouble("std_cost"));
-				p.setStdPrice(rs.getDouble("std_price"));
-				p.setReorderPoint(rs.getInt("reorder_point"));
-				p.setOrderLot(rs.getInt("order_lot"));
-				p.setDiscontinued(rs.getBoolean("discontinued"));
-				return p;
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				rs.next();
+				return rs.getInt(1);
 			}
-			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		return orderLot;
 	}
 
-	public List<Product> search(String keyword) throws SQLException {
+	public Product getByJan(String jan)  {
+		String sql = "SELECT * FROM products WHERE jan=?";
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql);) {
+			ps.setString(1, jan);
+			try (ResultSet rs = ps.executeQuery();) {
+				if (rs.next()) {
+					Product p = new Product();
+					p.setId(rs.getInt("id"));
+					p.setJan(rs.getString("jan"));
+					p.setName(rs.getString("name"));
+					p.setStdCost(rs.getDouble("std_cost"));
+					p.setStdPrice(rs.getDouble("std_price"));
+					p.setReorderPoint(rs.getInt("reorder_point"));
+					p.setOrderLot(rs.getInt("order_lot"));
+					p.setDiscontinued(rs.getBoolean("discontinued"));
+					return p;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Product> search(String keyword) {
 		String sql = "SELECT * FROM products WHERE jan ILIKE ? OR name ILIKE ?";
 		List<Product> list = new ArrayList<>();
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql);) {
 			ps.setString(1, "%" + keyword + "%");
 			ps.setString(2, "%" + keyword + "%");
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				Product p = new Product();
-				p.setId(rs.getInt("id"));
-				p.setJan(rs.getString("jan"));
-				p.setName(rs.getString("name"));
-				list.add(p);
+			try(ResultSet rs = ps.executeQuery();){
+				while (rs.next()) {
+					Product p = new Product();
+					p.setId(rs.getInt("id"));
+					p.setJan(rs.getString("jan"));
+					p.setName(rs.getString("name"));
+					list.add(p);
+				}
+				return list;
 			}
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
 		}
 		return list;
 	}

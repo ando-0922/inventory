@@ -2,62 +2,45 @@ package model.bean;
 
 import java.sql.Timestamp;
 
-public class Product {
+public class RegisterProduct {
 	private int id;
 	private String jan;
 	private String name;
 	private double stdCost;
 	private double stdPrice;
-	private int reorderPoint;
+	private int reoderPoint;
 	private int orderLot;
 	private boolean discontinued;
 	private Timestamp createdAt;
 	private Timestamp updateAt;
-	Product(int id, String jan, String name, double stdCost, double stdPrice, int reorderPoint, int orderLot,
-			boolean discontinued) {
+	public RegisterProduct(int id, String jan, String name, double stdCost, double stdPrice, int reoderPoint,
+			int orderLot, boolean discontinued, Timestamp createdAt, Timestamp updateAt) {
+		super();
 		this.id = id;
 		this.jan = jan;
 		this.name = name;
 		this.stdCost = stdCost;
 		this.stdPrice = stdPrice;
-		this.reorderPoint = reorderPoint;
-		this.orderLot = orderLot;
-		this.discontinued = discontinued;
-	}
-	public Product(int id, String jan, String name, double stdCost, double stdPrice, int reorderPoint, int orderLot,
-			boolean discontinued, Timestamp createdAt, Timestamp updateAt) {
-		this.id = id;
-		this.jan = jan;
-		this.name = name;
-		this.stdCost = stdCost;
-		this.stdPrice = stdPrice;
-		this.reorderPoint = reorderPoint;
+		this.reoderPoint = reoderPoint;
 		this.orderLot = orderLot;
 		this.discontinued = discontinued;
 		this.createdAt = createdAt;
 		this.updateAt = updateAt;
 	}
-	public Product(String jan, String name, double stdCost, double stdPrice, int reorderPoint, int orderLot) {
+	public RegisterProduct(String jan, String name, int stdCost, int stdPrice, int reoderPoint, int orderLot) {
 		this.jan = jan;
 		this.name = name;
 		this.stdCost = stdCost;
 		this.stdPrice = stdPrice;
-		this.reorderPoint = reorderPoint;
+		this.reoderPoint = reoderPoint;
 		this.orderLot = orderLot;
 	}
-	public Product(String name, int stdCost, int stdPrice, int reorderPoint, int orderLot) {
+	public RegisterProduct(String name, int stdCost, int stdPrice, int reoderPoint, int orderLot) {
 		this.name = name;
 		this.stdCost = stdCost;
 		this.stdPrice = stdPrice;
-		this.reorderPoint = reorderPoint;
+		this.reoderPoint = reoderPoint;
 		this.orderLot = orderLot;
-	}
-	public Product(String name2, String jan2) {
-		this.name = name2;
-		this.jan = jan2;
-	}
-	public Product() {
-		// TODO 自動生成されたコンストラクター・スタブ
 	}
 	public int getId() {
 		return id;
@@ -89,16 +72,16 @@ public class Product {
 	public void setStdPrice(double stdPrice) {
 		this.stdPrice = stdPrice;
 	}
-	public int getReorderPoint() {
-		return reorderPoint;
+	public int getReoderPoint() {
+		return reoderPoint;
 	}
-	public void setReorderPoint(int reorderPoint) {
-		this.reorderPoint = reorderPoint;
+	public void setReoderPoint(int reoderPoint) {
+		this.reoderPoint = reoderPoint;
 	}
 	public int getOrderLot() {
 		return orderLot;
 	}
-	public void setOrderLot(int orderLot) {
+	public void setOrderlot(int orderLot) {
 		this.orderLot = orderLot;
 	}
 	public boolean isDiscontinued() {
@@ -118,6 +101,11 @@ public class Product {
 	}
 	public void setUpdateAt(Timestamp updateAt) {
 		this.updateAt = updateAt;
+	}
+	@Override
+	public String toString() {
+		return "RegisterProduct [jan=" + jan + ", name=" + name + ", stdCost=" + stdCost + ", stdPrice=" + stdPrice
+				+ ", reoderPoint=" + reoderPoint + ", orderlot=" + orderLot + "]";
 	}
 	
 }

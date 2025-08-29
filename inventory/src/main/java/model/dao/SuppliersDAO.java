@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.InventoryConnection;
 import model.bean.Supplier;
@@ -21,7 +23,7 @@ public class SuppliersDAO {
 				while (rs.next()) {
 					int id = rs.getInt("id");
 					String name = rs.getString("name");
-					return new Supplier(id,name);
+					return new Supplier(id, name);
 				}
 			}
 		} catch (SQLException e) {
@@ -34,12 +36,12 @@ public class SuppliersDAO {
 		String sql = "SELECT id,name FROM suppliers WHERE id LIKE ?";
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
-			ps.setString(1, "%"+keyword+"%");
+			ps.setString(1, "%" + keyword + "%");
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
 					int id = rs.getInt("id");
 					String name = rs.getString("name");
-					return new Supplier(id,name);
+					return new Supplier(id, name);
 				}
 			}
 		} catch (SQLException e) {
@@ -121,7 +123,66 @@ public class SuppliersDAO {
 			e.printStackTrace();
 		}
 		return 0;
-	
+
+	}
+
+	public int insertSupplier(String name, int leadTime, String phone, String email) throws SQLException {
+		String sql = "INSERT INTO suppliers(name, lead_time_days, phone, email) VALUES (?, ?, ?, ?) RETURNING id";
+		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+			ps.setString(1, name);
+			ps.setInt(2, leadTime);
+			ps.setString(3, phone);
+			ps.setString(4, email);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			return rs.getInt("id");
+		}
+	}
+
+	public void updateSupplier(int id, String name, int leadTime, String phone, String email) throws SQLException {
+		String sql = "UPDATE suppliers SET name=?, lead_time_days=?, phone=?, email=? WHERE id=?";
+		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+			ps.setString(1, name);
+			ps.setInt(2, leadTime);
+			ps.setString(3, phone);
+			ps.setString(4, email);
+			ps.setInt(5, id);
+			ps.executeUpdate();
+		}
+	}
+
+	public Supplier getById(int id) throws SQLException {
+		String sql = "SELECT * FROM suppliers WHERE id=?";
+		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				Supplier s = new Supplier();
+				s.setId(rs.getInt("id"));
+				s.setName(rs.getString("name"));
+				s.setLeadTimeDays(rs.getInt("lead_time_days"));
+				s.setPhone(rs.getString("phone"));
+				s.setEmail(rs.getString("email"));
+				return s;
+			}
+			return null;
+		}
+	}
+
+	public List<Supplier> search(String keyword) throws SQLException {
+		String sql = "SELECT * FROM suppliers WHERE name ILIKE ?";
+		List<Supplier> list = new ArrayList<>();
+		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+			ps.setString(1, "%" + keyword + "%");
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Supplier s = new Supplier();
+				s.setId(rs.getInt("id"));
+				s.setName(rs.getString("name"));
+				list.add(s);
+			}
+		}
+		return list;
 	}
 
 }

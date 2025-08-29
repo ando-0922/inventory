@@ -9,12 +9,12 @@ import model.bean.Stock;
 import model.bean.StorageHistory;
 
 public class OriginalDisplayer extends Displayer {
-	public void stockListbrunchOnNull(List<Stock> list, String inpPartOfName) {//case1の表示
+	public void stockListbrunchOnNull(List<Stock> stockList, String inpPartOfName) {//case1の表示
 		dispMsg("在庫の一覧");
 		if (inpPartOfName != null) {
-			list.stream().filter(name -> name.getName().contains(inpPartOfName)).forEach(System.out::println);
+			stockList.stream().filter(name -> name.getName().contains(inpPartOfName)).forEach(System.out::println);
 		} else {
-			list.stream().forEach(System.out::println);
+			stockList.stream().forEach(System.out::println);
 		}
 	}
 
@@ -72,5 +72,16 @@ public class OriginalDisplayer extends Displayer {
 				.filter(date -> date.getMovedAt().toLocalDateTime().toLocalDate().isBefore(period[0]))
 				.filter(date -> date.getMovedAt().toLocalDateTime().toLocalDate().isAfter(period[1]))
 				.forEach(System.out::println);
+	}
+
+	public String entJanNotNull(String string) {
+		String jan = entStrNotNull(string);
+		while (true) {
+			if (jan.length() == 12 && jan.matches("^\\d+$")) {
+				return jan;
+			} else {
+				dispMsg("JANは12桁の数値で入力してください。");
+			}
+		}
 	}
 }

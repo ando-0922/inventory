@@ -1,5 +1,6 @@
 package view;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Displayer {
@@ -63,6 +64,40 @@ public class Displayer {
 		return scan.nextLine();
 	}
 
-	
+	public int entIntNotNull(String string) {
+		while (true) {
+			int inte = entInt(string);
+			if (inte != 0) {
+				return inte;
+			}
+
+		}
+	}
+
+	public int entInt(String msg) {
+		while (true) {
+			dispMsg(msg);
+			try {
+				int inte = scan.nextInt();
+				scan.nextLine();
+				return inte;
+			} catch (InputMismatchException e) {
+				dispMsg("数値を入力してください。");
+			}
+		}
+	}
+
+	public boolean confirm(String string) {
+		while (true) {
+			String inp = entStrNotNull(string);
+			if (inp.matches("(Y|y)")) {
+				return true;
+			} else if (inp.matches("(N|n")) {
+				return false;
+			}else {
+				dispMsg("「Y」または「N」を入力してください。");
+			}
+		}
+	}
 
 }
