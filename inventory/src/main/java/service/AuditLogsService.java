@@ -1,4 +1,4 @@
-package controller;
+package service;
 
 import model.bean.AuditLog;
 import model.dao.AuditLogsDAO;

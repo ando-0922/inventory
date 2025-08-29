@@ -3,17 +3,34 @@ package controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
+import model.bean.AuditLog;
 import model.bean.Product;
 import model.bean.Purchase;
 import model.bean.PurchaseLine;
 import model.bean.Replenishment;
 import model.bean.ReplenishmentLine;
 import model.bean.Sale;
+import model.bean.SaleLine;
 import model.bean.Stock;
+import model.bean.StockMovement;
+import model.bean.Supplier;
+import model.bean.Warehouse;
+import service.AuditLogsService;
+import service.ProductsService;
+import service.PurchaseLinesService;
+import service.PurchasesService;
+import service.SalesService;
+import service.StockMovementsService;
+import service.StocksService;
+import service.SuppliersService;
+import service.WarehousesService;
+import view.Displayer;
+import view.OriginalDisplayer;
 
-public class Controller {
+public class G {
 		//printf  
 		//% 書式指定子開始
 		//d 整数10進数　s文字列　c文字

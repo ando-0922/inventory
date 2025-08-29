@@ -88,5 +88,8 @@ public class Supplier {
 		return "Supplier [name=" + name + ", leadTimeDays=" + leadTimeDays + ", phone=" + phone + ", email=" + email
 				+ "]";
 	}
+	public void setLeadTimeDays(int int1) {
+		
+	}
 	
 }

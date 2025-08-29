@@ -1,9 +1,6 @@
 package model.bean;
 
 import java.sql.Timestamp;
-enum Statu{
-	ORDERED,RECIEVED
-}
 
 public class PurchaseSlip {
 	private int id;

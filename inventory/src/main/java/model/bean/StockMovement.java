@@ -23,6 +23,14 @@ public class StockMovement {
 		this.refId = refId;
 		this.movedAt = movedAt;
 	}
+	public StockMovement(int id2, int id3, int qty2, String string, String string2, int purchaseId) {
+		this.productId = id2;
+		this.warehouseId = id3;
+		this.qty = qty2;
+		this.type = string;
+		this.refType = string2;
+		this.refId = purchaseId;
+	}
 	public int getId() {
 		return id;
 	}

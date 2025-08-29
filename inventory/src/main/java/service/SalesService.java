@@ -3,7 +3,9 @@ package service;
 import java.time.LocalDate;
 
 import model.bean.Product;
-import model.bean.SaleDetail;
+import model.bean.Sale;
+import model.bean.SaleLine;
+import model.bean.StockMovement;
 import model.bean.Warehouse;
 import model.dao.AuditLogsDAO;
 import model.dao.SaleLinesDAO;
@@ -14,7 +16,7 @@ public class SalesService {
 
 	SalesDAO sldao = new SalesDAO();
 
-	public int insertSlip(SaleDetail saledetail) {
+	public int insertSlip(Sale saledetail) {
 		return sldao.insert(saledetail);
 	}
 
@@ -30,18 +32,18 @@ public class SalesService {
 		if (stock < qty)
 			throw new RuntimeException("在庫不足です");
 		// ヘッダ作成 
-		Sale sale = new Sale(LocalDate.now());
+		Sale sale = new SaleLine(LocalDate.now());
 		int saleId = salesDAO.insert(sale);
 		// 明細作成 
-		SaleDetail detail = new SaleDetail(saleId, product.getId(), qty, unitPrice);
+		SaleLine detail = new SaleLine(saleId, product.getId(), qty, unitPrice);
 		saleLinesDAO.insert(detail);
 		// 在庫減算 
 		stocksService.subtractQty(product, warehouse, qty);
 		// 在庫変遷履歴作成 
 		StockMovement sm = new StockMovement(product.getId(), warehouse.getId(), -qty, "SALE", "SALE", saleId);
-		stockMovementsDAO.insert(sm);
+		stockMovementsDAO.insertMovement(sm);
 		// 監査ログ登録 
-		auditLogsDAO.insert("SALE", "sales", saleId, null);
+		auditLogsDAO.insertLog("SALE", "sales", saleId, null);
 		return saleId;
 	}
 

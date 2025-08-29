@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,55 +50,81 @@ public class WarehousesDAO {
 		return 0;
 	}
 
-	public int insertWarehouse(String name, String location) throws SQLException {
+	public int insertWarehouse(String name, String location) {
 		String sql = "INSERT INTO warehouses(name, location) VALUES (?, ?) RETURNING id";
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, name);
 			ps.setString(2, location);
-			ResultSet rs = ps.executeQuery();
-			rs.next();
-			return rs.getInt("id");
+			try (ResultSet rs = ps.executeQuery();) {
+				rs.next();
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
 		}
+		return 0;
 	}
 
-	public void updateWarehouse(int id, String name, String location) throws SQLException {
+	public int updateWarehouse(int id, String name, String location) {
 		String sql = "UPDATE warehouses SET name=?, location=? WHERE id=?";
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, name);
 			ps.setString(2, location);
 			ps.setInt(3, id);
 			ps.executeUpdate();
-		}
-	}
-
-	public Warehouse getById(int id) throws SQLException {
-		String sql = "SELECT * FROM warehouses WHERE id=?";
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				Warehouse w = new Warehouse();
-				w.setId(rs.getInt("id"));
-				w.setName(rs.getString("name"));
-				w.setLocation(rs.getString("location"));
-				return w;
+			try (ResultSet rs = ps.executeQuery();) {
+				rs.next();
+				return rs.getInt(1);
 			}
-			return null;
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
 		}
+		return 0;
 	}
 
-	public List<Warehouse> getAll() throws SQLException {
+	public Warehouse getById(int id) {
+		String sql = "SELECT * FROM warehouses WHERE id=?";
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql);) {
+			ps.setInt(1, id);
+			try (ResultSet rs = ps.executeQuery();) {
+				if (rs.next()) {
+					Warehouse w = new Warehouse();
+					w.setId(rs.getInt("id"));
+					w.setName(rs.getString("name"));
+					w.setLocation(rs.getString("location"));
+					return w;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Warehouse> getAll() {
 		String sql = "SELECT * FROM warehouses";
 		List<Warehouse> list = new ArrayList<>();
-		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				Warehouse w = new Warehouse();
-				w.setId(rs.getInt("id"));
-				w.setName(rs.getString("name"));
-				w.setLocation(rs.getString("location"));
-				list.add(w);
+		try (Connection con = inventoryConnection.getConnection();
+				PreparedStatement ps = con.prepareStatement(sql)) {
+			try (ResultSet rs = ps.executeQuery();) {
+				while (rs.next()) {
+					Warehouse w = new Warehouse();
+					w.setId(rs.getInt("id"));
+					w.setName(rs.getString("name"));
+					w.setLocation(rs.getString("location"));
+					list.add(w);
+				}
 			}
+			return list;
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
 		}
 		return list;
 	}

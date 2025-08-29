@@ -1,4 +1,4 @@
-package controller;
+package service;
 
 import model.bean.Product;
 import model.dao.ProductsDAO;
