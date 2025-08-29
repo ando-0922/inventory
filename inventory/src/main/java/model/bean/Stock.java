@@ -73,4 +73,6 @@ public class Stock {
 		this.productId = productId;
 	}
 
+	
+	
 }

@@ -21,8 +21,8 @@ public class WarehousesDAO {
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
 					int id = rs.getInt("id");
-					String name =  rs.getString("name");
-					return new Warehouse(id,name);
+					String name = rs.getString("name");
+					return new Warehouse(id, name);
 				}
 			}
 		} catch (SQLException e) {
@@ -48,6 +48,7 @@ public class WarehousesDAO {
 		}
 		return 0;
 	}
+
 	public int insertWarehouse(String name, String location) throws SQLException {
 		String sql = "INSERT INTO warehouses(name, location) VALUES (?, ?) RETURNING id";
 		try (PreparedStatement ps = inventoryConnection.prepareStatement(sql)) {

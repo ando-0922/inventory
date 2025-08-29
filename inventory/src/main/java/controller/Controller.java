@@ -50,7 +50,7 @@ public class Controller {
 		List<SaleLine> saleLines = new ArrayList<>();
 		List<StockMovement> movements = new ArrayList<>();
 		List<AuditLog> auditLogs = new ArrayList<>();
-//		Service service = new Service();
+		//		Service service = new Service();
 		StocksService stocksSvc = new StocksService();
 		StockMovementsService stockmovementsSvc = new StockMovementsService();
 		SuppliersService suppliersSvc = new SuppliersService();
@@ -718,6 +718,7 @@ public class Controller {
 			}
 		}
 	}
+
 	static Product findProduct(List<Product> products, long id) {
 		for (Product p : products)
 			if (p.id == id)
@@ -740,16 +741,12 @@ public class Controller {
 		return r;
 	}
 
-	
-
 	static Warehouse findWarehouse(List<Warehouse> ws, long id) {
 		for (Warehouse w : ws)
 			if (w.id == id)
 				return w;
 		return null;
 	}
-
-
 
 	static Stock findOrCreateStock(List<Stock> stocks, long productId, long warehouseId) {
 		Stock s = findStock(stocks, productId, warehouseId);
@@ -817,7 +814,4 @@ public class Controller {
 				return s;
 		return null;
 	}
-
-
-	
 }

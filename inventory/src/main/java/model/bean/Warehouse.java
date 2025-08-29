@@ -66,4 +66,5 @@ public class Warehouse {
 		this.updatedAt = updatedAt;
 	}
 
+	
 }

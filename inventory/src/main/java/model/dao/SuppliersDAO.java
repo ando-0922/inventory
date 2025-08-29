@@ -183,6 +183,6 @@ public class SuppliersDAO {
 			}
 		}
 		return list;
-	}
 
+	}
 }

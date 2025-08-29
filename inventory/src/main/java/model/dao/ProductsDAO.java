@@ -172,7 +172,7 @@ public class ProductsDAO {
 		return orderLot;
 	}
 
-	public Product getByJan(String jan)  {
+	public Product getByJan(String jan) {
 		String sql = "SELECT * FROM products WHERE jan=?";
 		try (Connection con = inventoryConnection.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);) {
@@ -204,7 +204,7 @@ public class ProductsDAO {
 				PreparedStatement ps = con.prepareStatement(sql);) {
 			ps.setString(1, "%" + keyword + "%");
 			ps.setString(2, "%" + keyword + "%");
-			try(ResultSet rs = ps.executeQuery();){
+			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
 					Product p = new Product();
 					p.setId(rs.getInt("id"));
@@ -219,6 +219,6 @@ public class ProductsDAO {
 			e.printStackTrace();
 		}
 		return list;
-	}
 
+	}
 }

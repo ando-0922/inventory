@@ -75,6 +75,7 @@ public class StorageHistory {
 	}
 	public void setRefId(int refId) {
 		this.refId = refId;
+
 	}
 	@Override
 	public String toString() {
